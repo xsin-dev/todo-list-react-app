@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import TodoForm from "./components/TodoForm";
+import TodoItem from "./components/TodoItem";
 
 const App = () => {
   const storage = JSON.parse(localStorage.getItem("todos")) || [];
@@ -17,9 +19,12 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const value = e.target[0].value.trim();
+    if (!value) return;
+
     if (edit) {
       const updatedTodo = todos.find((todo) => todo.id === edit);
-      updatedTodo.text = e.target[0].value;
+      updatedTodo.text = value;
 
       const newTodos = todos.map((todo) =>
         todo.id === edit ? updatedTodo : todo
@@ -29,10 +34,9 @@ const App = () => {
     } else {
       const newTodo = {
         id: Date.now(),
-        text: e.target[0].value,
+        text: value,
         isCompleted: false,
       };
-
       setTodos([...todos, newTodo]);
     }
 
@@ -41,20 +45,13 @@ const App = () => {
 
   const handleToggle = (id) => {
     const newTodos = todos.map((todo) =>
-      todo.id === id
-        ? {
-            ...todo,
-            isCompleted: !todo.isCompleted,
-          }
-        : todo
+      todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
     );
-
     setTodos(newTodos);
   };
 
   const handleDelete = (id) => {
     const newTodos = todos.filter((todo) => todo.id !== id);
-
     setTodos(newTodos);
 
     if (edit === id) {
@@ -65,54 +62,34 @@ const App = () => {
 
   const handleEdit = (todo) => {
     setEdit(todo.id);
-
     inputRef.current.value = todo.text;
-
     inputRef.current.focus();
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
-          ref={inputRef}
-          className="input"
-          placeholder="Todos..."
-        />
-        <button type="submit" className="btn">
-          {edit ? "Update" : "Add"}
-        </button>
-      </form>
+    <div className="container">
+      <h1> My Todo List</h1>
+      <TodoForm
+        inputRef={inputRef}
+        handleSubmit={handleSubmit}
+        edit={edit}
+      />
 
-      {todos.map((todo) => (
-        <div
-          className="todo-item"
-          key={todo.id}
-          style={{ display: "flex", gap: "10px" }}
-        >
-          <p
-            style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
-            onClick={() => handleToggle(todo.id)}
-          >
-            {todo.text}
-          </p>
-          <button
-            className="edit"
-            onClick={() => handleEdit(todo)}
-            style={{ padding: "4px 20px", backgroundColor: "yellow" }}
-          >
-            Edit
-          </button>
-          <button
-            className="delete"
-            onClick={() => handleDelete(todo.id)}
-            style={{ padding: "4px 20px", backgroundColor: "red" }}
-          >
-            Delete
-          </button>
-        </div>
-      ))}
+      <div className="todos">
+        {todos.length ? (
+          todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              handleToggle={handleToggle}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
+            />
+          ))
+        ) : (
+          <p className="empty">Hech qanday vazifa yo‘q</p>
+        )}
+      </div>
     </div>
   );
 };
