@@ -9,10 +9,10 @@ const TodoItem = ({ todo, handleToggle, handleEdit, handleDelete }) => {
       </p>
       <div className="buttons">
         <button className="edit" onClick={() => handleEdit(todo)}>
-          ✏️ Edit
+          ✏️ Tahrirlash
         </button>
         <button className="delete" onClick={() => handleDelete(todo.id)}>
-          🗑️ Delete
+          🗑️ O'chirish
         </button>
       </div>
     </div>

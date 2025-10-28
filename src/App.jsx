@@ -68,7 +68,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1> My Todo List</h1>
+      <h1>Vazifalar ro‘yxati</h1>
       <TodoForm
         inputRef={inputRef}
         handleSubmit={handleSubmit}
